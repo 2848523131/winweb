@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="天津专升本计算机应用基础刷题软件：每日30题、错题本、章节训练和学习总结。"
+    />
+    <title>天津专升本计算机刷题</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark">津</div>
+          <div>
+            <strong>计算机刷题</strong>
+            <span>天津专升本</span>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item is-active" data-view="daily" type="button">
+            <span>今日30题</span>
+            <b id="dailyNavCount">0/30</b>
+          </button>
+          <button class="nav-item" data-view="chapters" data-chapter-filter="all" type="button">
+            <span>章节训练</span>
+            <b id="chapterNavCount">6章</b>
+          </button>
+          <button class="nav-item" data-view="mistakes" type="button">
+            <span>错题本</span>
+            <b id="mistakeNavCount">0</b>
+          </button>
+          <button class="nav-item" data-view="review" type="button">
+            <span>错题回顾</span>
+            <b id="reviewNavCount">0</b>
+          </button>
+          <button class="nav-item" data-view="summary" type="button">
+            <span>每日总结</span>
+            <b id="summaryNavCount">待完成</b>
+          </button>
+        </nav>
+
+        <div class="chapter-nav" aria-label="章节练习入口">
+          <span class="nav-section-title">章节练习题</span>
+          <button class="chapter-nav-item is-current" data-chapter-filter="all" type="button">
+            <span>全部章节</span>
+            <b id="allChapterCount">120题</b>
+          </button>
+          <div id="chapterNavList"></div>
+        </div>
+
+        <div class="sidebar-panel">
+          <span class="panel-label">今日目标</span>
+          <strong id="goalPercent">0%</strong>
+          <div class="mini-progress">
+            <span id="goalProgress"></span>
+          </div>
+          <p id="goalHint">完成 30 道题后生成今日复盘。</p>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="todayLabel">今日练习</p>
+            <h1 id="pageTitle">每日30题</h1>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-button" id="resetTodayBtn" type="button">重置今日</button>
+            <button class="primary-button" id="startDailyBtn" type="button">开始刷题</button>
+          </div>
+        </header>
+
+        <section class="stats-grid" aria-label="学习数据">
+          <article class="stat-card">
+            <span>今日完成</span>
+            <strong id="todayDone">0</strong>
+            <small>每日固定 30 题</small>
+          </article>
+          <article class="stat-card">
+            <span>今日正确率</span>
+            <strong id="todayAccuracy">0%</strong>
+            <small id="accuracyHint">先完成几题看看</small>
+          </article>
+          <article class="stat-card">
+            <span>累计错题</span>
+            <strong id="totalMistakes">0</strong>
+            <small>自动记录并可重练</small>
+          </article>
+          <article class="stat-card">
+            <span>今日回顾</span>
+            <strong id="reviewCount">0</strong>
+            <small>来自昨天错题的相似题</small>
+          </article>
+          <article class="stat-card">
+            <span>连续学习</span>
+            <strong id="streakDays">0天</strong>
+            <small>按自然日统计</small>
+          </article>
+        </section>
+
+        <section class="view is-visible" id="dailyView">
+          <div class="section-head">
+            <div>
+              <h2>今日试卷</h2>
+              <p>系统按日期从全部章节中稳定抽取 30 道题，每天自动换一套。</p>
+            </div>
+            <div class="segmented" role="group" aria-label="练习模式">
+              <button class="is-selected" data-mode="all" type="button">全部</button>
+              <button data-mode="unfinished" type="button">未做</button>
+              <button data-mode="wrong" type="button">错题</button>
+            </div>
+          </div>
+          <div class="question-list" id="dailyQuestionList"></div>
+        </section>
+
+        <section class="view" id="chaptersView">
+          <div class="section-head">
+            <div>
+              <h2>章节训练</h2>
+              <p>按考纲模块训练，适合课后补弱项。</p>
+            </div>
+          </div>
+          <div class="chapter-grid" id="chapterGrid"></div>
+          <div class="question-list compact" id="chapterQuestionList"></div>
+        </section>
+
+        <section class="view" id="mistakesView">
+          <div class="section-head">
+            <div>
+              <h2>错题本</h2>
+              <p>答错后自动加入，重练答对会标记为已掌握。</p>
+            </div>
+            <button class="ghost-button" id="clearMasteredBtn" type="button">清理已掌握</button>
+          </div>
+          <div class="question-list" id="mistakeQuestionList"></div>
+        </section>
+
+        <section class="view" id="reviewView">
+          <div class="section-head">
+            <div>
+              <h2>错题回顾</h2>
+              <p>自动读取昨天做错的题，并从同章节抽相似题帮你复盘。</p>
+            </div>
+          </div>
+          <div class="review-panel" id="reviewSourcePanel"></div>
+          <div class="question-list" id="reviewQuestionList"></div>
+        </section>
+
+        <section class="view" id="summaryView">
+          <div class="section-head">
+            <div>
+              <h2>每日总结</h2>
+              <p>根据今日答题记录生成薄弱章节和复习建议。</p>
+            </div>
+          </div>
+          <div class="summary-layout">
+            <article class="summary-card">
+              <h3>今日表现</h3>
+              <div id="summaryToday"></div>
+            </article>
+            <article class="summary-card">
+              <h3>薄弱章节</h3>
+              <div id="summaryWeak"></div>
+            </article>
+            <article class="summary-card wide">
+              <h3>复习建议</h3>
+              <div id="summaryAdvice"></div>
+            </article>
+            <article class="summary-card wide">
+              <h3>错题原因与坑点</h3>
+              <div id="summaryMistakeInsights"></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="./questions-data.js" charset="UTF-8"></script>
+    <script src="./app.js" charset="UTF-8"></script>
+  </body>
+</html>
